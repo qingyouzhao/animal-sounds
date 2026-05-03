@@ -655,6 +655,42 @@ function playAnimalSound(name) {
   }
 }
 
+// ─── Narration ────────────────────────────────────────────────────────────────
+function speakAndPlay(name, label) {
+  if (!window.speechSynthesis) {
+    playAnimalSound(name);
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utt = new SpeechSynthesisUtterance(label);
+  utt.rate = 0.95;
+  utt.pitch = 1.1;
+  utt.lang = 'en-US';
+
+  // Prefer a female English voice
+  const voices = speechSynthesis.getVoices();
+  const female = voices.find(v => /samantha|victoria|karen|moira|tessa|zira|fiona|veena|allison|ava|emily|serena|kate|claire/i.test(v.name))
+              || voices.find(v => /^en/.test(v.lang) && /female|woman/i.test(v.name))
+              || voices.find(v => /^en/.test(v.lang));
+  if (female) utt.voice = female;
+
+  // Guard so we never fire twice (onend + timeout race)
+  let played = false;
+  const playSound = () => {
+    if (played) return;
+    played = true;
+    playAnimalSound(name);
+  };
+
+  utt.onend = playSound;
+  utt.onerror = playSound;
+  setTimeout(playSound, 3000); // safety fallback if onend never fires
+
+  speechSynthesis.speak(utt);
+}
+
 // ─── Sound Synthesis (fallback for animals without recordings) ────────────────
 let audioCtx = null;
 
@@ -1018,8 +1054,8 @@ function renderAnimals() {
       // Ripple effect
       spawnRipple(e.clientX, e.clientY);
 
-      // Play sound
-      playAnimalSound(animal.name);
+      // Narrate name then play sound
+      speakAndPlay(animal.name, animal.label || animal.name);
     });
 
     grid.appendChild(btn);
