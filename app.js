@@ -598,7 +598,100 @@ const ANIMAL_SHAPES = {
   }
 };
 
-// ─── Sound Synthesis ──────────────────────────────────────────────────────────
+// ─── Real Animal Sound Recordings ─────────────────────────────────────────────
+// Sources: Wikimedia Commons (public domain / CC licensed)
+// URL path = upload.wikimedia.org/wikipedia/commons/[md5[0]]/[md5[0:2]]/[filename]
+const RECORDINGS = {
+  Cat:         { url: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg',                                                                                  duration: 4 },
+  Dog:         { url: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Barking_of_a_dog.ogg',                                                                      duration: 4 },
+  Cow:         { url: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Mudchute_cow_1.ogg',                                                                        duration: 4 },
+  Duck:        { url: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Anas_platyrhynchos_-_Mallard_-_XC62258.ogg',                                               duration: 4 },
+  Frog:        { url: 'https://upload.wikimedia.org/wikipedia/commons/9/9f/PigFrog_EvergladesNP.ogg',                                                                  duration: 3 },
+  Horse:       { url: 'https://upload.wikimedia.org/wikipedia/commons/2/29/Horse-neigh.ogg',                                                                           duration: 4 },
+  Lion:        { url: 'https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg',                                                        duration: 5 },
+  Elephant:    { url: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg',                                                           duration: 4 },
+  Sheep:       { url: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Sheep_bleating.ogg',                                                                        duration: 4 },
+  Bird:        { url: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Bird_singing.ogg',                                                                          duration: 4 },
+  Bee:         { url: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Hummel_bee.ogg',                                                                            duration: 3 },
+  Sparrow:     { url: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/House_Sparrows_(Passer_domesticus)_(W1CDR0001537_BD13).ogg',                               duration: 3 },
+  Hawk:        { url: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Buteo_jamaicensis_-_Red-tailed_Hawk_-_XC71575.ogg',                                        duration: 3 },
+  BlackPhoebe: { url: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Sayornis_nigricans_semiater_-_Black_Phoebe_-_XC109602.ogg',                                duration: 4 },
+};
+
+// Cache Audio objects so files load only once
+const _audioCache = new Map();
+
+function playAnimalSound(name) {
+  const rec = RECORDINGS[name];
+  if (!rec) {
+    // No recording — use synthesis fallback
+    const synth = SOUNDS_SYNTH[name] || SOUNDS_SYNTH['Bird'];
+    try { synth(); } catch (e) { console.warn('Synth error:', e); }
+    return;
+  }
+
+  let audio = _audioCache.get(name);
+  if (!audio) {
+    audio = new Audio(rec.url);
+    _audioCache.set(name, audio);
+  }
+
+  audio.pause();
+  audio.currentTime = rec.start || 0;
+
+  let stopTimer = null;
+  audio.addEventListener('play', () => {
+    if (stopTimer) clearTimeout(stopTimer);
+    stopTimer = setTimeout(() => audio.pause(), (rec.duration || 4) * 1000);
+  }, { once: true });
+
+  const promise = audio.play();
+  if (promise !== undefined) {
+    promise.catch(() => {
+      // Network or format error — fall back to synthesis
+      const synth = SOUNDS_SYNTH[name] || SOUNDS_SYNTH['Bird'];
+      try { synth(); } catch (e) { console.warn('Synth error:', e); }
+    });
+  }
+}
+
+// ─── Narration ────────────────────────────────────────────────────────────────
+function speakAndPlay(name, label) {
+  if (!window.speechSynthesis) {
+    playAnimalSound(name);
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utt = new SpeechSynthesisUtterance(label);
+  utt.rate = 0.95;
+  utt.pitch = 1.1;
+  utt.lang = 'en-US';
+
+  // Prefer a female English voice
+  const voices = speechSynthesis.getVoices();
+  const female = voices.find(v => /samantha|victoria|karen|moira|tessa|zira|fiona|veena|allison|ava|emily|serena|kate|claire/i.test(v.name))
+              || voices.find(v => /^en/.test(v.lang) && /female|woman/i.test(v.name))
+              || voices.find(v => /^en/.test(v.lang));
+  if (female) utt.voice = female;
+
+  // Guard so we never fire twice (onend + timeout race)
+  let played = false;
+  const playSound = () => {
+    if (played) return;
+    played = true;
+    playAnimalSound(name);
+  };
+
+  utt.onend = playSound;
+  utt.onerror = playSound;
+  setTimeout(playSound, 3000); // safety fallback if onend never fires
+
+  speechSynthesis.speak(utt);
+}
+
+// ─── Sound Synthesis (fallback for animals without recordings) ────────────────
 let audioCtx = null;
 
 function getAudioCtx() {
@@ -633,7 +726,7 @@ function addReverb(ctx, source, mix=0.25) {
   return { dry, wet, convolver };
 }
 
-const SOUNDS = {
+const SOUNDS_SYNTH = {
   Cat() {
     const ctx = getAudioCtx();
     // Meow: FM oscillator with formant sweep
@@ -934,8 +1027,6 @@ function renderAnimals() {
   const grid = document.getElementById('animal-grid');
 
   ANIMALS.forEach(animal => {
-    const soundFn = SOUNDS[animal.name] || SOUNDS['Bird'];
-
     const btn = document.createElement('button');
     btn.className = 'animal-btn';
     const displayName = animal.label || animal.name;
@@ -963,8 +1054,8 @@ function renderAnimals() {
       // Ripple effect
       spawnRipple(e.clientX, e.clientY);
 
-      // Play sound
-      try { soundFn(); } catch(err) { console.warn('Audio error:', err); }
+      // Narrate name then play sound
+      speakAndPlay(animal.name, animal.label || animal.name);
     });
 
     grid.appendChild(btn);
