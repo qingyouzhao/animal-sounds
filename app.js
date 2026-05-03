@@ -11,7 +11,13 @@ const ANIMALS = [
   { name: 'Lion',     colors: ['#e8c060','#c47828','#4a2808'] },
   { name: 'Elephant', colors: ['#b0b8c4','#707888','#202830'] },
   { name: 'Sheep',    colors: ['#e4e8ec','#a0a8b0','#302828'] },
-  { name: 'Bird',     colors: ['#98c8e8','#e86848','#1a3858'] },
+  { name: 'Bird',        colors: ['#98c8e8','#e86848','#1a3858'] },
+  { name: 'Bee',         colors: ['#f5d828','#d47808','#181000'] },
+  { name: 'Sparrow',     colors: ['#c8a878','#7a5030','#281408'] },
+  { name: 'Caterpillar', colors: ['#80c860','#3a8028','#0a2808'] },
+  { name: 'Dragonfly',   colors: ['#50c8e8','#0878b8','#001828'] },
+  { name: 'Hawk',        colors: ['#c09050','#784820','#180c00'] },
+  { name: 'BlackPhoebe', label: 'Black Phoebe', colors: ['#d8d8e8','#404858','#080810'] },
 ];
 
 // ─── SVG Animal Illustrations ─────────────────────────────────────────────────
@@ -371,6 +377,217 @@ const ANIMAL_SHAPES = {
       <ellipse cx="68" cy="60" rx="2.5" ry="3" fill="white" opacity="0.6"/>
       <ellipse cx="86" cy="60" rx="2.5" ry="3" fill="white" opacity="0.6"/>`
   },
+  Bee: {
+    bg: (m,a) => `
+      <ellipse cx="80" cy="90" rx="44" ry="34" fill="${m}" opacity="0.3" filter="url(#blur-Bee)"/>`,
+    body: (m,a) => `
+      <!-- Wings (semi-transparent) -->
+      <ellipse cx="52" cy="68" rx="28" ry="16" fill="white" opacity="0.45" transform="rotate(-20 52 68)"/>
+      <ellipse cx="108" cy="68" rx="28" ry="16" fill="white" opacity="0.45" transform="rotate(20 108 68)"/>
+      <ellipse cx="48" cy="80" rx="20" ry="12" fill="white" opacity="0.3" transform="rotate(-15 48 80)"/>
+      <ellipse cx="112" cy="80" rx="20" ry="12" fill="white" opacity="0.3" transform="rotate(15 112 80)"/>
+      <!-- Abdomen with stripes -->
+      <ellipse cx="80" cy="105" rx="28" ry="22" fill="${m}"/>
+      <ellipse cx="80" cy="100" rx="26" ry="7" fill="${a}" opacity="0.85"/>
+      <ellipse cx="80" cy="112" rx="24" ry="7" fill="${a}" opacity="0.85"/>
+      <ellipse cx="80" cy="123" rx="18" ry="6" fill="${a}" opacity="0.7"/>
+      <!-- Thorax -->
+      <ellipse cx="80" cy="82" rx="18" ry="14" fill="${a}"/>
+      <!-- Head -->
+      <ellipse cx="80" cy="64" rx="15" ry="14" fill="${a}"/>
+      <!-- Eyes (compound) -->
+      <ellipse cx="70" cy="60" rx="8" ry="9" fill="#1a3a00" opacity="0.9"/>
+      <ellipse cx="90" cy="60" rx="8" ry="9" fill="#1a3a00" opacity="0.9"/>
+      <!-- Antennae -->
+      <line x1="74" y1="51" x2="60" y2="30" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="86" y1="51" x2="100" y2="30" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="60" cy="29" r="4" fill="${a}"/>
+      <circle cx="100" cy="29" r="4" fill="${a}"/>
+      <!-- Stinger -->
+      <path d="M80,127 Q80,138 82,143" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+    highlights: (bg) => `
+      <ellipse cx="67" cy="57" rx="3" ry="4" fill="white" opacity="0.4"/>
+      <ellipse cx="87" cy="57" rx="3" ry="4" fill="white" opacity="0.4"/>`
+  },
+  Sparrow: {
+    bg: (m,a) => `
+      <ellipse cx="80" cy="98" rx="46" ry="34" fill="${m}" opacity="0.28" filter="url(#blur-Sparrow)"/>
+      <ellipse cx="80" cy="65" rx="24" ry="20" fill="${a}" opacity="0.2" filter="url(#blur-Sparrow)"/>`,
+    body: (m,a) => `
+      <!-- Body -->
+      <ellipse cx="80" cy="100" rx="36" ry="26" fill="${m}"/>
+      <!-- Wing streaks -->
+      <path d="M48,92 Q40,76 50,58 Q62,72 68,90" fill="${lighten(a,-10)}"/>
+      <path d="M112,92 Q120,76 110,58 Q98,72 92,90" fill="${lighten(a,-10)}"/>
+      <!-- Wing bar detail -->
+      <path d="M50,78 Q62,74 68,82" stroke="${lighten(m,30)}" stroke-width="2.5" fill="none" opacity="0.7"/>
+      <path d="M110,78 Q98,74 92,82" stroke="${lighten(m,30)}" stroke-width="2.5" fill="none" opacity="0.7"/>
+      <!-- Tail -->
+      <path d="M62,122 Q54,138 56,148" stroke="${a}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M72,126 Q68,142 68,152" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M80,128 Q78,144 80,154" stroke="${a}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M88,126 Q92,142 92,152" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M98,122 Q106,138 104,148" stroke="${a}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- Belly (lighter) -->
+      <ellipse cx="80" cy="104" rx="22" ry="16" fill="${lighten(m,35)}" opacity="0.7"/>
+      <!-- Head (darker cap) -->
+      <ellipse cx="80" cy="66" rx="20" ry="18" fill="${a}"/>
+      <!-- Eye stripe -->
+      <path d="M62,64 Q72,60 88,62" stroke="${lighten(a,-20)}" stroke-width="3.5" fill="none" opacity="0.6"/>
+      <!-- Eyes -->
+      <ellipse cx="71" cy="63" rx="6" ry="6" fill="white"/>
+      <ellipse cx="89" cy="63" rx="6" ry="6" fill="white"/>
+      <ellipse cx="71" cy="64" rx="3.5" ry="4" fill="#0c0600"/>
+      <ellipse cx="89" cy="64" rx="3.5" ry="4" fill="#0c0600"/>
+      <!-- Stubby beak -->
+      <path d="M74,73 L80,80 L86,73 Q80,69 74,73" fill="${lighten(a,25)}"/>`,
+    highlights: (bg) => `
+      <ellipse cx="68" cy="60" rx="2" ry="2.5" fill="white" opacity="0.6"/>
+      <ellipse cx="86" cy="60" rx="2" ry="2.5" fill="white" opacity="0.6"/>`
+  },
+  Caterpillar: {
+    bg: (m,a) => `
+      <ellipse cx="80" cy="100" rx="62" ry="28" fill="${m}" opacity="0.28" filter="url(#blur-Caterpillar)"/>`,
+    body: (m,a) => `
+      <!-- Segments (overlapping ellipses along horizontal curve) -->
+      <ellipse cx="118" cy="100" rx="16" ry="18" fill="${lighten(m,-8)}"/>
+      <ellipse cx="100" cy="96" rx="17" ry="19" fill="${m}"/>
+      <ellipse cx="81"  cy="93" rx="17" ry="19" fill="${lighten(m,8)}"/>
+      <ellipse cx="62"  cy="96" rx="17" ry="19" fill="${m}"/>
+      <ellipse cx="44"  cy="100" rx="16" ry="18" fill="${lighten(m,-8)}"/>
+      <!-- Segment ridges -->
+      <line x1="91" y1="75" x2="91" y2="111" stroke="${a}" stroke-width="1.5" opacity="0.4"/>
+      <line x1="72" y1="78" x2="72" y2="113" stroke="${a}" stroke-width="1.5" opacity="0.4"/>
+      <line x1="110" y1="82" x2="110" y2="116" stroke="${a}" stroke-width="1.5" opacity="0.4"/>
+      <!-- Legs -->
+      <line x1="100" y1="114" x2="95" y2="130" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="80"  y1="112" x2="76" y2="128" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="62"  y1="114" x2="58" y2="130" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="100" y1="114" x2="105" y2="130" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="80"  y1="112" x2="84" y2="128" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="62"  y1="114" x2="66" y2="130" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Head -->
+      <ellipse cx="30" cy="100" rx="20" ry="22" fill="${lighten(m,10)}"/>
+      <!-- Eyes -->
+      <ellipse cx="23" cy="90" rx="7" ry="7" fill="white"/>
+      <ellipse cx="37" cy="90" rx="7" ry="7" fill="white"/>
+      <ellipse cx="23" cy="91" rx="4" ry="4.5" fill="#0a1200"/>
+      <ellipse cx="37" cy="91" rx="4" ry="4.5" fill="#0a1200"/>
+      <!-- Antennae -->
+      <line x1="22" y1="84" x2="12" y2="64" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="36" y1="82" x2="38" y2="60" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="12" cy="62" r="3.5" fill="${a}"/>
+      <circle cx="38" cy="58" r="3.5" fill="${a}"/>
+      <!-- Smile -->
+      <path d="M20,104 Q30,112 40,104" stroke="${a}" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+    highlights: (bg) => `
+      <ellipse cx="21" cy="87" rx="2" ry="2.5" fill="white" opacity="0.6"/>
+      <ellipse cx="35" cy="87" rx="2" ry="2.5" fill="white" opacity="0.6"/>`
+  },
+  Dragonfly: {
+    bg: (m,a) => `
+      <ellipse cx="80" cy="80" rx="65" ry="44" fill="${m}" opacity="0.22" filter="url(#blur-Dragonfly)"/>`,
+    body: (m,a) => `
+      <!-- Upper wings -->
+      <ellipse cx="38" cy="70" rx="38" ry="16" fill="${m}" opacity="0.55" transform="rotate(-12 38 70)"/>
+      <ellipse cx="122" cy="70" rx="38" ry="16" fill="${m}" opacity="0.55" transform="rotate(12 122 70)"/>
+      <!-- Lower wings -->
+      <ellipse cx="42" cy="84" rx="30" ry="12" fill="${m}" opacity="0.4" transform="rotate(8 42 84)"/>
+      <ellipse cx="118" cy="84" rx="30" ry="12" fill="${m}" opacity="0.4" transform="rotate(-8 118 84)"/>
+      <!-- Wing venation lines -->
+      <line x1="52" y1="66" x2="18" y2="62" stroke="white" stroke-width="1" opacity="0.5"/>
+      <line x1="108" y1="66" x2="142" y2="62" stroke="white" stroke-width="1" opacity="0.5"/>
+      <!-- Abdomen (long segmented tail) -->
+      <rect x="76" y="72" width="8" height="80" rx="4" fill="${a}"/>
+      <line x1="80" y1="84" x2="80" y2="84" stroke="white" stroke-width="6" stroke-dasharray="6 4" opacity="0.5"/>
+      <!-- Thorax -->
+      <ellipse cx="80" cy="80" rx="14" ry="12" fill="${a}"/>
+      <!-- Head (huge compound eyes) -->
+      <ellipse cx="80" cy="62" rx="18" ry="15" fill="${a}"/>
+      <ellipse cx="65" cy="60" rx="14" ry="14" fill="${m}" opacity="0.9"/>
+      <ellipse cx="95" cy="60" rx="14" ry="14" fill="${m}" opacity="0.9"/>
+      <ellipse cx="65" cy="60" rx="9" ry="10" fill="${lighten(a,-10)}"/>
+      <ellipse cx="95" cy="60" rx="9" ry="10" fill="${lighten(a,-10)}"/>
+      <!-- Iridescent eye facets -->
+      <circle cx="62" cy="57" r="3" fill="white" opacity="0.25"/>
+      <circle cx="92" cy="57" r="3" fill="white" opacity="0.25"/>`,
+    highlights: (bg) => `
+      <ellipse cx="61" cy="55" rx="3.5" ry="4" fill="white" opacity="0.45"/>
+      <ellipse cx="91" cy="55" rx="3.5" ry="4" fill="white" opacity="0.45"/>`
+  },
+  Hawk: {
+    bg: (m,a) => `
+      <ellipse cx="80" cy="90" rx="58" ry="44" fill="${m}" opacity="0.26" filter="url(#blur-Hawk)"/>`,
+    body: (m,a) => `
+      <!-- Soaring wings -->
+      <path d="M16,80 Q28,62 52,74 Q66,80 80,76 Q94,80 108,74 Q132,62 144,80 Q128,90 108,84 Q94,88 80,86 Q66,88 52,84 Q32,90 16,80" fill="${m}"/>
+      <!-- Wing primary feathers left -->
+      <path d="M16,80 Q20,90 28,96" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M22,77 Q26,88 34,94" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M30,74 Q34,84 42,90" stroke="${a}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Wing primary feathers right -->
+      <path d="M144,80 Q140,90 132,96" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M138,77 Q134,88 126,94" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M130,74 Q126,84 118,90" stroke="${a}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Body -->
+      <ellipse cx="80" cy="100" rx="20" ry="28" fill="${m}"/>
+      <!-- Breast barring -->
+      <path d="M66,94 Q80,90 94,94" stroke="${lighten(a,-15)}" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M64,100 Q80,96 96,100" stroke="${lighten(a,-15)}" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M66,106 Q80,102 94,106" stroke="${lighten(a,-15)}" stroke-width="2" fill="none" opacity="0.5"/>
+      <!-- Tail -->
+      <path d="M68,126 Q72,142 70,150" stroke="${a}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M76,128 Q78,144 78,154" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M80,128 Q82,144 82,154" stroke="${a}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M84,128 Q86,144 86,154" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M92,126 Q88,142 90,150" stroke="${a}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <!-- Head -->
+      <ellipse cx="80" cy="66" rx="16" ry="15" fill="${a}"/>
+      <!-- Eye with fierce ring -->
+      <ellipse cx="73" cy="63" rx="7" ry="6.5" fill="${lighten(m,30)}" opacity="0.9"/>
+      <ellipse cx="87" cy="63" rx="7" ry="6.5" fill="${lighten(m,30)}" opacity="0.9"/>
+      <ellipse cx="73" cy="64" rx="4" ry="4.5" fill="#080400"/>
+      <ellipse cx="87" cy="64" rx="4" ry="4.5" fill="#080400"/>
+      <!-- Hooked beak -->
+      <path d="M74,72 Q80,76 86,72 Q84,80 80,83 Q76,80 74,72" fill="${lighten(a,30)}"/>`,
+    highlights: (bg) => `
+      <ellipse cx="70" cy="60" rx="2.5" ry="3" fill="white" opacity="0.6"/>
+      <ellipse cx="84" cy="60" rx="2.5" ry="3" fill="white" opacity="0.6"/>`
+  },
+  BlackPhoebe: {
+    bg: (m,a) => `
+      <ellipse cx="80" cy="98" rx="42" ry="34" fill="${a}" opacity="0.28" filter="url(#blur-BlackPhoebe)"/>
+      <ellipse cx="80" cy="65" rx="22" ry="20" fill="${m}" opacity="0.15" filter="url(#blur-BlackPhoebe)"/>`,
+    body: (m,a,bg) => `
+      <!-- Body black back/wings -->
+      <ellipse cx="80" cy="100" rx="34" ry="26" fill="${m}"/>
+      <!-- White belly -->
+      <ellipse cx="82" cy="106" rx="20" ry="18" fill="white"/>
+      <!-- Wing detail -->
+      <path d="M46,92 Q38,76 46,56 Q60,70 66,90" fill="${lighten(m,15)}"/>
+      <path d="M114,92 Q122,76 114,56 Q100,70 94,90" fill="${lighten(m,15)}"/>
+      <!-- Wing bar (white) -->
+      <path d="M50,76 Q62,72 66,80" stroke="${lighten(bg,20)}" stroke-width="2.5" fill="none" opacity="0.65"/>
+      <path d="M110,76 Q98,72 94,80" stroke="${lighten(bg,20)}" stroke-width="2.5" fill="none" opacity="0.65"/>
+      <!-- Tail (long, black) -->
+      <path d="M64,122 Q58,140 60,152" stroke="${m}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M74,126 Q70,144 70,154" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M80,128 Q80,146 80,156" stroke="${m}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M86,126 Q90,144 90,154" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M96,122 Q102,140 100,152" stroke="${m}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- Head (jet black) -->
+      <ellipse cx="80" cy="64" rx="20" ry="19" fill="${m}"/>
+      <!-- Eyes -->
+      <ellipse cx="71" cy="60" rx="6.5" ry="6.5" fill="${a}" opacity="0.9"/>
+      <ellipse cx="89" cy="60" rx="6.5" ry="6.5" fill="${a}" opacity="0.9"/>
+      <ellipse cx="71" cy="61" rx="3.5" ry="4" fill="#06060e"/>
+      <ellipse cx="89" cy="61" rx="3.5" ry="4" fill="#06060e"/>
+      <!-- Small flat beak -->
+      <path d="M75,71 L80,77 L85,71 Q80,67 75,71" fill="${a}"/>`,
+    highlights: (bg) => `
+      <ellipse cx="68" cy="57" rx="2" ry="2.5" fill="white" opacity="0.55"/>
+      <ellipse cx="86" cy="57" rx="2" ry="2.5" fill="white" opacity="0.55"/>`
+  },
   default: {
     bg: (m) => `<ellipse cx="80" cy="80" rx="60" ry="60" fill="${m}" opacity="0.3"/>`,
     body: (m,a) => `<ellipse cx="80" cy="80" rx="44" ry="44" fill="${m}"/>
@@ -595,6 +812,120 @@ const SOUNDS = {
     }
     trill(0, 1800, 2400, 4);
     trill(0.35, 2000, 2800, 3);
+  },
+  Bee() {
+    const ctx = getAudioCtx();
+    // Buzz: AM synthesis — carrier at wing-beat frequency
+    const carrier = ctx.createOscillator();
+    const modOsc = ctx.createOscillator();
+    const modGain = ctx.createGain();
+    const masterGain = ctx.createGain();
+    carrier.type = 'sawtooth'; carrier.frequency.value = 240;
+    modOsc.type = 'sine'; modOsc.frequency.value = 190;
+    modGain.gain.value = 0.5;
+    modOsc.connect(modGain); modGain.connect(masterGain.gain);
+    carrier.connect(masterGain); masterGain.connect(ctx.destination);
+    applyEnvelope(masterGain, ctx, { attack:0.04, sustain:0.8, release:0.2, peak:0.35 });
+    carrier.start(); modOsc.start(); carrier.stop(ctx.currentTime + 1.2); modOsc.stop(ctx.currentTime + 1.2);
+  },
+  Sparrow() {
+    const ctx = getAudioCtx();
+    // Sparrow: rapid staccato "tsip tsip chip" calls
+    function tsip(delay, freq) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime + delay;
+      osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t0);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.3, t0 + 0.04);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.85, t0 + 0.09);
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.28, t0 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.1);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0 + 0.12);
+    }
+    tsip(0, 3400); tsip(0.13, 3600); tsip(0.26, 3200); tsip(0.4, 3800); tsip(0.52, 3500);
+  },
+  Caterpillar() {
+    const ctx = getAudioCtx();
+    // Soft leaf-crunch: filtered pink noise bursts
+    function crunch(delay) {
+      const len = Math.floor(ctx.sampleRate * 0.12);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      let b0=0,b1=0,b2=0;
+      for (let i=0;i<len;i++){
+        const w=Math.random()*2-1;
+        b0=0.99886*b0+w*0.0555179; b1=0.99332*b1+w*0.0750759; b2=0.96900*b2+w*0.1538520;
+        d[i]=(b0+b1+b2+w*0.0782232)*0.11;
+      }
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass'; filter.frequency.value = 1400; filter.Q.value = 2;
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime + delay;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.5, t0 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.11);
+      src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      src.start(t0); src.stop(t0 + 0.14);
+    }
+    crunch(0); crunch(0.18); crunch(0.34); crunch(0.5); crunch(0.66);
+  },
+  Dragonfly() {
+    const ctx = getAudioCtx();
+    // High-frequency flutter: faster AM than bee
+    const carrier = ctx.createOscillator();
+    const modOsc = ctx.createOscillator();
+    const modGain = ctx.createGain();
+    const masterGain = ctx.createGain();
+    carrier.type = 'sawtooth'; carrier.frequency.value = 380;
+    modOsc.type = 'sine'; modOsc.frequency.value = 320;
+    modGain.gain.value = 0.45;
+    modOsc.connect(modGain); modGain.connect(masterGain.gain);
+    carrier.connect(masterGain); masterGain.connect(ctx.destination);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass'; filter.frequency.value = 300;
+    masterGain.connect(filter); filter.connect(ctx.destination);
+    applyEnvelope(masterGain, ctx, { attack:0.03, sustain:0.7, release:0.18, peak:0.28 });
+    carrier.start(); modOsc.start(); carrier.stop(ctx.currentTime + 1.1); modOsc.stop(ctx.currentTime + 1.1);
+  },
+  Hawk() {
+    const ctx = getAudioCtx();
+    // Piercing scream: "kee-aah" — sharp saw sweep with bandpass
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(900, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.7);
+    osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 1.1);
+    filter.type = 'bandpass'; filter.frequency.value = 1600; filter.Q.value = 2.5;
+    filter.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 1.1);
+    osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    applyEnvelope(gain, ctx, { attack:0.015, sustain:0.75, release:0.3, peak:0.42 });
+    osc.start(); osc.stop(ctx.currentTime + 1.3);
+  },
+  BlackPhoebe() {
+    const ctx = getAudioCtx();
+    // "Fee-bee": two clean whistled notes, second slightly lower
+    function note(delay, f1, f2, dur) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime + delay;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f1, t0);
+      osc.frequency.linearRampToValueAtTime(f2, t0 + dur * 0.7);
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.32, t0 + 0.03);
+      gain.gain.setValueAtTime(0.32, t0 + dur - 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0 + dur + 0.02);
+    }
+    note(0,    2100, 2350, 0.28);  // "fee" — rising
+    note(0.38, 1900, 1550, 0.38);  // "bee" — falling
   }
 };
 
@@ -607,7 +938,8 @@ function renderAnimals() {
 
     const btn = document.createElement('button');
     btn.className = 'animal-btn';
-    btn.setAttribute('aria-label', `Play ${animal.name} sound`);
+    const displayName = animal.label || animal.name;
+    btn.setAttribute('aria-label', `Play ${displayName} sound`);
     btn.type = 'button';
 
     const card = document.createElement('div');
@@ -616,7 +948,7 @@ function renderAnimals() {
 
     const label = document.createElement('span');
     label.className = 'animal-name';
-    label.textContent = animal.name;
+    label.textContent = displayName;
 
     btn.appendChild(card);
     btn.appendChild(label);
