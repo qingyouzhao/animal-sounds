@@ -621,12 +621,67 @@ const RECORDINGS = {
 // Cache Audio objects so files load only once
 const _audioCache = new Map();
 
-function playAnimalSound(name) {
-  const rec = RECORDINGS[name];
-  if (!rec) {
-    // No recording — use synthesis fallback
+// 'real'  → try Wikimedia recording, fall back to phonetic speech on failure
+// 'human' → always use phonetic speech
+let soundMode = 'real';
+
+// ─── Phonetic Speech Fallback ─────────────────────────────────────────────────
+// When real recordings are unavailable, speak the animal's sound phonetically
+// using the Web Speech API at animal-appropriate pitch and rate.
+const PHONETICS = {
+  Cat:         { text: 'meow',          pitch: 1.6, rate: 0.7 },
+  Dog:         { text: 'woof woof',     pitch: 0.8, rate: 1.0 },
+  Cow:         { text: 'mooo',          pitch: 0.4, rate: 0.5 },
+  Duck:        { text: 'quack quack',   pitch: 1.3, rate: 1.1 },
+  Frog:        { text: 'ribbit ribbit', pitch: 0.7, rate: 1.2 },
+  Horse:       { text: 'neigh',         pitch: 1.1, rate: 0.8 },
+  Lion:        { text: 'roar',          pitch: 0.3, rate: 0.4 },
+  Elephant:    { text: 'pawoo',         pitch: 0.4, rate: 0.5 },
+  Sheep:       { text: 'baa baa',       pitch: 1.3, rate: 0.8 },
+  Bird:        { text: 'tweet tweet',   pitch: 1.9, rate: 1.2 },
+  Bee:         { text: 'bzzz',          pitch: 1.6, rate: 1.5 },
+  Sparrow:     { text: 'chirp chirp',   pitch: 1.9, rate: 1.3 },
+  Caterpillar: { text: 'munch munch',   pitch: 1.0, rate: 0.9 },
+  Dragonfly:   { text: 'bzzz',          pitch: 1.8, rate: 1.6 },
+  Hawk:        { text: 'skreee',        pitch: 1.6, rate: 0.7 },
+  BlackPhoebe: { text: 'fee bee',       pitch: 1.8, rate: 0.8 },
+};
+
+function speakPhonetic(name) {
+  const p = PHONETICS[name] || PHONETICS['Bird'];
+
+  if (!window.speechSynthesis) {
+    // Last resort: Web Audio synthesis if speech API is unavailable
     const synth = SOUNDS_SYNTH[name] || SOUNDS_SYNTH['Bird'];
     try { synth(); } catch (e) { console.warn('Synth error:', e); }
+    return;
+  }
+
+  speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(p.text);
+  utt.pitch = p.pitch;
+  utt.rate  = p.rate;
+  utt.lang  = 'en-US';
+
+  const voices = speechSynthesis.getVoices();
+  const female = voices.find(v => /samantha|victoria|karen|moira|tessa|zira|fiona|veena|allison|ava|emily|serena|kate|claire/i.test(v.name))
+              || voices.find(v => /^en/.test(v.lang) && /female|woman/i.test(v.name))
+              || voices.find(v => /^en/.test(v.lang));
+  if (female) utt.voice = female;
+
+  speechSynthesis.speak(utt);
+}
+
+function playAnimalSound(name) {
+  if (soundMode === 'human') {
+    speakPhonetic(name);
+    return;
+  }
+
+  const rec = RECORDINGS[name];
+  if (!rec) {
+    // No recording — use phonetic speech fallback
+    speakPhonetic(name);
     return;
   }
 
@@ -648,9 +703,8 @@ function playAnimalSound(name) {
   const promise = audio.play();
   if (promise !== undefined) {
     promise.catch(() => {
-      // Network or format error — fall back to synthesis
-      const synth = SOUNDS_SYNTH[name] || SOUNDS_SYNTH['Bird'];
-      try { synth(); } catch (e) { console.warn('Synth error:', e); }
+      // Network or format error — fall back to phonetic speech
+      speakPhonetic(name);
     });
   }
 }
@@ -1073,4 +1127,17 @@ function spawnRipple(x, y) {
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', renderAnimals);
+function initModeSwitch() {
+  const btns = document.querySelectorAll('.mode-btn');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      soundMode = btn.dataset.mode;
+      btns.forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAnimals();
+  initModeSwitch();
+});
