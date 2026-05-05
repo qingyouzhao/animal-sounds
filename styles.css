@@ -62,6 +62,39 @@ header {
   letter-spacing: 0.06em;
 }
 
+/* ── Mode Switch ─────────────────────────────────────────────────── */
+.mode-switch {
+  display: inline-flex;
+  margin-top: 20px;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  border: 1.5px solid rgba(44,32,23,0.13);
+}
+
+.mode-btn {
+  font-family: var(--font);
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  padding: 7px 24px;
+  border: none;
+  background: rgba(255,255,255,0.55);
+  color: rgba(44,32,23,0.4);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.mode-btn.active {
+  background: rgba(150,95,28,0.82);
+  color: #fff6e8;
+}
+
+.mode-btn:hover:not(.active) {
+  background: rgba(180,120,40,0.12);
+  color: var(--ink);
+}
+
 /* ── Animal Grid ─────────────────────────────────────────────────── */
 .grid {
   display: grid;

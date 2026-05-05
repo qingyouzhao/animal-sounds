@@ -621,6 +621,10 @@ const RECORDINGS = {
 // Cache Audio objects so files load only once
 const _audioCache = new Map();
 
+// 'real'  → try Wikimedia recording, fall back to phonetic speech on failure
+// 'human' → always use phonetic speech
+let soundMode = 'real';
+
 // ─── Phonetic Speech Fallback ─────────────────────────────────────────────────
 // When real recordings are unavailable, speak the animal's sound phonetically
 // using the Web Speech API at animal-appropriate pitch and rate.
@@ -669,6 +673,11 @@ function speakPhonetic(name) {
 }
 
 function playAnimalSound(name) {
+  if (soundMode === 'human') {
+    speakPhonetic(name);
+    return;
+  }
+
   const rec = RECORDINGS[name];
   if (!rec) {
     // No recording — use phonetic speech fallback
@@ -1118,4 +1127,17 @@ function spawnRipple(x, y) {
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', renderAnimals);
+function initModeSwitch() {
+  const btns = document.querySelectorAll('.mode-btn');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      soundMode = btn.dataset.mode;
+      btns.forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAnimals();
+  initModeSwitch();
+});
